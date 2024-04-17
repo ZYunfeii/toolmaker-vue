@@ -1,0 +1,21 @@
+.el-header {
+    background-color: #e4ecec;
+    color: #333;
+    font-family:Arial, Helvetica, sans-serif;
+    border-radius: 10px; /* 添加圆角 */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+    margin-bottom: 20px;
+  }
+
+  .avatar-col {
+    position: relative;
+    bottom: -10px; /* 向下偏移的距离 */
+  }
+
+.toptitle {
+  position: relative;
+    bottom: -15px; /* 向下偏移的距离 */;
+    font-family: Arial, sans-serif;
+    font-size: 150%;
+}
+

@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-container>
-            <el-aside width="300px">
+            <el-aside width="30%">
                 <div>
                     <div class="left-align">
                         <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
@@ -11,7 +11,7 @@
                     </div>
                     <div class="left-align">
                         <el-menu default-active="1-4-1" class="el-menu-vertical-demo" :collapse="isCollapse">
-                            <el-menu-item index="1" @click.native="handleOpen('/menu1')">
+                            <el-menu-item index="1" :disabled=true @click.native="handleOpen('/menu1')">
                                 <i class="el-icon-location"></i>
                                 <span slot="title">导航一</span>
                             </el-menu-item>
@@ -19,11 +19,11 @@
                                 <i class="el-icon-menu"></i>
                                 <span slot="title">写日记</span>
                             </el-menu-item>
-                            <el-menu-item index="3" @click.native="handleOpen('/menu3')">
+                            <el-menu-item index="3" :disabled=true @click.native="handleOpen('/menu3')">
                                 <i class="el-icon-document"></i>
                                 <span slot="title">导航三</span>
                             </el-menu-item>
-                            <el-menu-item index="4" @click.native="handleOpen('/menu4')">
+                            <el-menu-item index="4" :disabled=true @click.native="handleOpen('/menu4')">
                                 <i class="el-icon-setting"></i>
                                 <span slot="title">导航四</span>
                             </el-menu-item>
@@ -38,7 +38,7 @@
     </div>
 
 </template>
-<style>
+<style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 200px;
     min-height: 400px;

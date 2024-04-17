@@ -20,6 +20,11 @@
                             {{ scope.row.fileSize }}KiB
                         </template>
                     </el-table-column>
+                    <el-table-column label="博客地址">
+                        <template slot-scope="scope">
+                            <a :href="scope.row.url">{{ scope.row.url }}</a>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="博客文件标识码">
                         <template slot-scope="scope">
                             {{ scope.row.identifier }}
@@ -39,7 +44,7 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 .el-button {
     display: flex;
     justify-content: flex-end;
@@ -75,6 +80,7 @@ export default {
             console.log(tableData[index].fileName);
             this.$axios.delete(`${this.apiDelete}/${tableData[index].identifier}`)
                 .then(response => {
+                    console.log(response.data);
                     if (response.data.code === 200) {
                         Message.success({
                             message: '删除成功！',
@@ -82,8 +88,16 @@ export default {
                                 this.fetchData()
                             }
                         });
-                    } else if (response.data.code >= 400) {
-                        Message.success('删除失败！');
+                    } else if (response.data.code === 40001){
+                        Message.error({
+                            message: '删除失败，未认证！',
+                        
+                        })
+                        this.$router.push('/login');
+                    } else {
+                        Message.error({
+                            message: '删除失败！',
+                        })
                     }
                 })
                 .catch(error => {

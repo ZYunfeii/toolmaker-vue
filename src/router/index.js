@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import Test from '@/components/Test.vue'
-import Container from '@/components/Container.vue'
-import Avatar from '@/components/Avatar'
 import BackendManagement from '@/components/BackendManagement'
 import Table from '@/components/Table'
 import MarkdownEdit from '../components/MarkdownEdit.vue'
+import Login from '../components/Login.vue'
 
 Vue.use(VueRouter)
 
@@ -29,6 +27,10 @@ const routes = [
   {
     path: '/markdown',
     component: MarkdownEdit
+  },
+  {
+    path: '/login',
+    component: Login
   }
 
 ];

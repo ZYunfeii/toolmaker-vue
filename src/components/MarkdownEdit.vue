@@ -3,12 +3,12 @@
     <div class="markdown-container">
         <el-input v-model="blogName" placeholder="博客名称（格式需要满足:yyyy-MM-dd-title）"></el-input>
         <el-input type="textarea" :rows="30" v-model="markdownText"></el-input>
-        <el-button type="success" round @click="submitMarkdown">提交</el-button>
+        <el-button type="success" round :disabled="buttonDisabled" @click="submitMarkdown">提交</el-button>
         <div class="rendered-markdown" v-html="renderedMarkdown"></div>
     </div>
 </template>
 
-<style>
+<style scoped>
 .markdown-container {
     text-align: left;
 }
@@ -67,6 +67,7 @@ tags: [旅游]     # TAG names should always be lowercase
             ,
             renderedMarkdown: '',
             placeholderMarkdown: '在此处输入 Markdown 文本',
+            buttonDisabled: false
         };
     },
     watch: {
@@ -80,6 +81,7 @@ tags: [旅游]     # TAG names should always be lowercase
             this.renderedMarkdown = md.render(this.markdownText);
         },
         submitMarkdown() {
+            this.buttonDisabled = true;
             axios.post('/api/blog/submit', {
                 blogName: this.blogName,
                 markdown: this.markdownText,
@@ -93,14 +95,22 @@ tags: [旅游]     # TAG names should always be lowercase
                                 this.$router.push('/menu2');
                             }
                         });
-                    } else if (response.data.code >= 400) {
-                        Message.success('上传失败！');
+                    } else if (response.data.code === 40001){
+                        Message.error({
+                            message: '删除失败，未认证！',
+                        })
+                        this.$router.push('/login');
+                    } else {
+                        Message.error({
+                            message: '删除失败！',
+                        })
                     }
-
+                    this.buttonDisabled = false;
                 })
                 .catch(error => {
                     // 处理错误
                     console.error(error);
+                    this.buttonDisabled = false;
                 });
         },
     },
