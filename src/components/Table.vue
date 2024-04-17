@@ -40,6 +40,11 @@
                     </el-table-column>
                 </el-table>
             </el-row>
+            <el-row>
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper" :total="totalRows" />
+            </el-row>
         </el-col>
     </div>
 </template>
@@ -58,19 +63,25 @@ export default {
     data() {
         return {
             tableData: [],
-            apiDelete: '/api/blog/delete'
+            apiDelete: '/api/blog/delete',
+            // 分页相关的数据
+            currentPage: 1, // 当前页码
+            pageSize: 10, // 每页显示的条目数
+            totalRows: 100, // 总条目数
         };
     },
     mounted() {
-        this.fetchData();
+        this.fetchData(this.currentPage, this.pageSize);
     },
     methods: {
-        fetchData() {
+        fetchData(curPage, pageSize) {
             console.log("enter fetchData!");
-            this.$axios.get('/api/blog/list')
+            this.$axios.get(`/api/blog/list?page=${curPage}&pageSize=${pageSize}`)
                 .then(response => {
                     console.log(response);
-                    this.tableData = JSON.parse(response.data.data);
+                    this.tableData = JSON.parse(response.data.data).data;
+                    // console.log(response.data.data);
+                    this.totalRows = JSON.parse(response.data.data).totalRows;
                 })
                 .catch(error => {
                     console.error(error);
@@ -85,13 +96,13 @@ export default {
                         Message.success({
                             message: '删除成功！',
                             onClose: () => {
-                                this.fetchData()
+                                this.fetchData(curPage, pageSize);
                             }
                         });
-                    } else if (response.data.code === 40001){
+                    } else if (response.data.code === 40001) {
                         Message.error({
                             message: '删除失败，未认证！',
-                        
+
                         })
                         this.$router.push('/login');
                     } else {
@@ -107,7 +118,19 @@ export default {
         goToMarkdown() {
             console.log("enter markdown")
             this.$router.push('/markdown');
-        }
+        },
+        // 处理每页显示条目数变化
+        handleSizeChange(size) {
+            this.pageSize = size;
+            // 更新数据或重新获取数据
+            this.fetchData(this.currentPage, this.pageSize);
+        },
+        // 处理页码变化
+        handleCurrentChange(page) {
+            this.currentPage = page;
+            // 更新数据或重新获取数据
+            this.fetchData(this.currentPage, this.pageSize);
+        },
     }
 };
 </script>
