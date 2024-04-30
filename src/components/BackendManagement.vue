@@ -21,7 +21,7 @@
 
 <style scoped>
 .el-header {
-    background-color: #e4ecec;
+    background-color: #ffffff;
     color: #333;
     font-family:Arial, Helvetica, sans-serif;
     border-radius: 10px; /* 添加圆角 */

@@ -1,14 +1,40 @@
 <template>
+    <el-container>
+        <el-header>
+            <el-row :gutter="20" class="align-center">
+                <el-col :span="6">
+                    博客名称（格式需要满足:yyyy-MM-dd-title）:
+                </el-col>
+                <el-col :span="10">
+                    <el-input v-model="blogName"></el-input>
+                </el-col>
+                
+            </el-row>
 
-    <div class="markdown-container">
-        <el-input v-model="blogName" placeholder="博客名称（格式需要满足:yyyy-MM-dd-title）"></el-input>
-        <el-input type="textarea" :rows="30" v-model="markdownText"></el-input>
-        <el-button type="success" round :disabled="buttonDisabled" @click="submitMarkdown">提交</el-button>
-        <div class="rendered-markdown" v-html="renderedMarkdown"></div>
-    </div>
+
+        </el-header>
+        <el-container>
+            <el-aside width="50%">
+                <el-input type="textarea" :rows="40" v-model="markdownText"></el-input>
+                <el-col :span="2" style="padding: 0;">
+                    <el-button type="success" round :disabled="buttonDisabled" @click="submitMarkdown">提交</el-button>
+                </el-col>
+            </el-aside>
+            <el-main>
+                <div class="markdown-container">
+                    <vue-markdown :source="markdownText"></vue-markdown>
+                </div>
+            </el-main>
+        </el-container>
+    </el-container>
+
 </template>
 
 <style scoped>
+.markdown-container {
+    text-align: left;
+}
+
 .markdown-container {
     text-align: left;
 }
@@ -17,17 +43,43 @@
     margin-top: 10px;
 }
 
+.align-center {
+    display: flex;
+    align-items: center;
+}
+
 .rendered-markdown {
     /* 添加其他样式 */
+}
+
+.left-align {
+    text-align: left;
 }
 </style>
 
 <script>
-import MarkdownIt from 'markdown-it';
+import VueMarkdown from 'vue-markdown';
 import axios from 'axios';
 import { Message } from 'element-ui';
 
 export default {
+    components: {
+        VueMarkdown
+    },
+    created() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+        const hours = String(today.getHours()).padStart(2, "0");
+        const minutes = String(today.getMinutes()).padStart(2, "0");
+        const seconds = String(today.getSeconds()).padStart(2, "0");
+
+        const title = "your-title"; // 替换成你想要的标题
+
+        this.blogName = `${year}-${month}-${day}-${title}`;
+        this.markdownText = this.markdownText.replace(/date:.*\n/, `date: ${year}-${month}-${day} ${hours}:${minutes}:${seconds} +/-TTTT\n`);
+    },
     data() {
         return {
             blogName: '',
@@ -70,16 +122,7 @@ tags: [旅游]     # TAG names should always be lowercase
             buttonDisabled: false
         };
     },
-    watch: {
-        markdownText() {
-            this.renderMarkdown();
-        },
-    },
     methods: {
-        renderMarkdown() {
-            const md = new MarkdownIt();
-            this.renderedMarkdown = md.render(this.markdownText);
-        },
         submitMarkdown() {
             this.buttonDisabled = true;
             axios.post('/api/blog/submit', {
@@ -95,7 +138,7 @@ tags: [旅游]     # TAG names should always be lowercase
                                 this.$router.push('/menu2');
                             }
                         });
-                    } else if (response.data.code === 40001){
+                    } else if (response.data.code === 40001) {
                         Message.error({
                             message: '删除失败，未认证！',
                         })
